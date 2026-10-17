@@ -9,6 +9,12 @@ import java.util.UUID;
 @Entity
 @Table(
         name = "notifications",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_notification_event_recipient",
+                        columnNames = {"event_id", "recipient_user_id"}
+                )
+        },
         indexes = {
                 @Index(name = "idx_notification_recipient", columnList = "recipient_user_id"),
                 @Index(name =  "idx_notification_read", columnList = "is_read"),
@@ -32,11 +38,14 @@ public class Notification {
     @Column(name = "recipient_user_id", nullable = false, length = 50)
     private String recipientUserId;
 
-    @Column(name = "event_id", nullable = false, unique = true)
+    @Column(name = "event_id", nullable = false)
     private UUID eventId;
 
     @Column(nullable = false, length = 50)
     private String type;
+
+    @Column(name = "ticket_number", length = 50)
+    private String ticketNumber;
 
     @Column(nullable = false, length = 200)
     private String title;

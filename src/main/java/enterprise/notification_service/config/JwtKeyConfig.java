@@ -19,29 +19,29 @@ public class JwtKeyConfig {
     @Value("classpath:keys/public_key.pem")
     private Resource publicKeyResource;
 
-            @Bean
-    public PublicKey publicKey() throws Exception{
-        String key = readPemKey(publicKeyResource,"-----BEGIN PUBLIC KEY-----","-----END PUBLIC KEY-----");
+    @Bean
+    public RSAPublicKey publicKey() throws Exception {
+        String key = readPemKey(publicKeyResource, "-----BEGIN PUBLIC KEY-----", "-----END PUBLIC KEY-----");
         byte[] decoded = Base64.getDecoder().decode(key);
-                X509EncodedKeySpec keySpec = new X509EncodedKeySpec(decoded);
-                KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-                return keyFactory.generatePublic(keySpec);
-            }
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(decoded);
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        return (RSAPublicKey) keyFactory.generatePublic(keySpec);
+    }
 
-            public String readPemKey(Resource resource, String begin, String end){
-                try(var inputStream = resource.getInputStream()){
-                    String key = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-                    return key
-                            .replace(begin,"")
-                            .replace(end,"")
-                            .replaceAll("\\s+", "");
-                }catch(Exception e){
-                    throw new RuntimeException(e);
-                }
-            }
+    public String readPemKey(Resource resource, String begin, String end) {
+        try (var inputStream = resource.getInputStream()) {
+            String key = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+            return key
+                    .replace(begin, "")
+                    .replace(end, "")
+                    .replaceAll("\\s+", "");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-            @Bean
-            public JwtDecoder jwtDecoder(RSAPublicKey publicKey){
+    @Bean
+    public JwtDecoder jwtDecoder(RSAPublicKey publicKey) {
         return NimbusJwtDecoder.withPublicKey(publicKey).build();
-            }
+    }
 }

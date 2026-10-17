@@ -25,7 +25,8 @@ public class TicketEventConsumer {
             TicketEvent event = objectMapper.readValue(message, TicketEvent.class);
             notificationService.createNotification(event);
         } catch (Exception e) {
-            log.error("Failed to process Kafka event: {}", message, e);
+            log.error("Failed to process ticket event from Kafka", e);
+            throw new IllegalStateException("Failed to process ticket event from Kafka", e);
         }
     }
 }

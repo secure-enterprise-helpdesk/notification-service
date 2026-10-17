@@ -22,6 +22,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/ws/notifications/**", "/ws/notifications/info").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(
