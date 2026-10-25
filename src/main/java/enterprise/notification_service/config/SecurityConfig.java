@@ -22,7 +22,12 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/ws/notifications/**", "/ws/notifications/info").permitAll()
+                        .requestMatchers(
+                                "/actuator/health/liveness",
+                                "/actuator/health/readiness",
+                                "/ws/notifications/**",
+                                "/ws/notifications/info"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(
@@ -44,4 +49,3 @@ public class SecurityConfig {
         return new JwtRoleConverter();
     }
 }
-
